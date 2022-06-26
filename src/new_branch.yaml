@@ -1,0 +1,5 @@
+newbranch:
+  - name: example
+    repo: "git@github.com:cherubic/batch-git-cmd-tools.git"
+    branch: "master"
+    newbranch: "example"
