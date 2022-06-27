@@ -1,4 +1,5 @@
 #!/bin/bash
+exec &> >(tee /tmp/batch-git-command-$(date +"%Y%M%d%H%m").log)
 set -x
 
 script="batch-git-command"
@@ -7,7 +8,7 @@ config_path="" # yaml配置目录
 git_branch=""   # git checkout branch
 git_new_branch=""   # git创建的新分支
 common_config_path=""   # 需要修改的通用配置路径
-
+environment="docker"  # 运行环境：host/docker
 
 function modify_common_config() {
     echo "not impletement"
@@ -50,6 +51,11 @@ function new_branch() {
         git push --set-upstream origin "${git_new_branch_item}"
 
         popd || exit 1
+
+        if [[ "${environment}" = "host" ]]; then
+            rm -rf "${repo_local_path}"
+        fi
+
     done
 }
 
@@ -63,7 +69,6 @@ function usage() {
 
 function help() {
     usage
-
 }
 
 function main() {
@@ -89,16 +94,20 @@ function main() {
             shift
             option=$1
             ;;
+        -e | --environment)
+            shift
+            environment=$1
+            ;;
         -h | --help)
             help
             exit
             ;;
-        # *)
-        #     echo "$script: illegal option $1"
-        #     usage
-        #     example
-        #     exit 1 # error
-        #     ;;
+        *)
+            echo "$script: illegal option $1"
+            usage
+            example
+            exit 1 # error
+            ;;
         esac
         shift
     done
@@ -110,4 +119,5 @@ function main() {
     fi
 }
 
-main "$@"
+main "$@" 
+set +x

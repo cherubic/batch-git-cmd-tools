@@ -32,8 +32,15 @@ newbranch:
 ```bash
 COMMIT_ID=$(git rev-parse --short=8 HEAD)
 docker run \
---mount type=bind,source=/Users/suguangyan/work_code/suguangyan/batch-git-cmd-tools/src/new_branch.yaml,target=/new_branch.yaml \
---mount type=bind,source=/Users/suguangyan/.ssh/id_rsa,target=/root/.ssh/id_rsa \
-batch-git-tools:ff916101 bash
-batch-git-tools:${COMMIT_ID} /batch-git-command.sh 
+--mount type=bind,source=<source-config-file-path>,target=<target-config-file-path> \
+--mount type=bind,source=<source-ssh-file-path>,target=/root/.ssh/id_rsa \
+--mount type=bind,source=<source-log-dircetory>,target=/tmp/
+batch-git-tools:${COMMIT_ID} /batch-git-command.sh -cp <target-config-file-path> -o newbranch -e "docker"
+```
+
+#### 主机环境中如何运行
+1. 添加对应yaml配置
+2. 运行如下命令创建新分支
+```bash
+batch-git-command.sh -cp <target-config-file-path> -o newbranch -e "host"
 ```
