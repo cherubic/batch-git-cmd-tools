@@ -30,13 +30,13 @@ function new_branch() {
 
         local git_branch_item="${git_branch}"
 
-        if [[ -n $(yq e ".newbranch[${i}].branch" "${config_path}") ]]; then
+        if [[ $(yq e ".newbranch[0] | has(\"branch\")" "${config_path}") = "true" ]]; then
             git_branch_item=$(yq e ".newbranch[${i}].branch" "${config_path}")
         fi
 
         local git_new_branch_item="${git_new_branch}"
 
-        if [[ -n $(yq e ".newbranch[${i}].newbranch" "${config_path}") ]]; then
+        if [[ $(yq e ".newbranch[0] | has(\"newbranch\")" "${config_path}") = "true" ]]; then
             git_new_branch_item=$(yq e ".newbranch[${i}].newbranch" "${config_path}")
         fi
 
